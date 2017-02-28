@@ -1,0 +1,12 @@
+
+x fix match scouting form to make auto look less like teleop
+x make current match update with scouting submissions
+x make scouting selection use current match but also be able to show all
+x shooting: change to made and missed (but keep DB and report using attempts)
+x fix picture submission
+x Defense Report- Specify auto/teleop or something; became a struggle when showing other teams the data (can even just be a key at the top of the table or in the heading)
+x "Scout another tebaam" button after driver feedback form submission
+x Put login/logout button on main menu so people actually do it
+x walk through app with scouts, get on same page for entering data
+x In Alliance Rankings, the official one from the blue alliance would be nice
+
