@@ -14,10 +14,20 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
  
+ 
+  <!--  FontAwesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/includes/font-awesome.min.css">
+ 
  <style> 
 body {
   padding-top: 70px;
   padding-bottom: 30px;
+}
+
+h4 {
+  color: indianred;
+  font-weight: bold;
 }
 
 .theme-dropdown .dropdown-menu {
@@ -34,6 +44,85 @@ body {
   width: auto;
 }
 
+/*  ------ New styles for 2017------  */
+
+.conditional-info {
+  display: none;
+}
+.subsection {    
+  font-size: 1.1em;
+  font-weight: bold;
+  color: steelblue;
+}
+table.counting th {
+    text-align: center;
+}
+table .expanded {
+  display: none;
+}
+.action {
+  color: blue;
+  text-decoration: underline;
+}
+
+/*  ------ Steamworks styles -------  */
+
+.sw {
+  /* font-size: 10pt;  */
+  /* font-family: 'FontAwesome';  */
+  /* text-decoration: none;  */
+  background-image: url('/includes/steamworks_sprite.png');
+  background-repeat: no-repeat;
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.sw-mobility {
+  /* content: '\f050'; -- use :before in selector if using fontawesome */
+  background-position: -183px 0px;
+}
+.sw-gear {
+  /* content: '\f013';  */
+  /* color: #dd3;  */
+  width: 18px;
+  background-position: -121px 0px;
+}
+.sw-hopper {
+  /* content: '\f2d0';  */
+  background-position: -161px 0px;
+}
+.sw-highshot {
+  width: 18px;
+  background-position: -140px 0px;
+}
+.sw-lowshot {
+  background-position: -143px -21px;
+}
+.sw-fuel {
+  /* content: '\f1e3';  */
+  background-position: -122px -21px;
+}
+.sw-arena {
+  width: 126px;
+  height: 47px;
+  background-position: -115px -41px;
+}
+.sw-rope {
+  width: 15px;
+  height: 34px;
+  background-position: -100px -41px;
+}
+.sw-touchpad {
+  /* content: '\f011';  */
+  /* color: red;  */
+  background-position: -200px -21px;
+}
+.sw-defense {
+  background-position: -180px -21px;
+}
+.sw-scout {
+  background-position: -162px -21px;
+}
 
 /*  ------ New styles for 2016------  */
 
@@ -49,23 +138,26 @@ input[type=number]{
     width: 60px;
 } 
 
-/*  ------ Stronghold styles ------  */
+/*  ------ New redone for Steamworks ------  */
 .minus, .plus {
-  background-image: url('/includes/strongholdSprites.png');
+  background-image: url('/includes/steamworks_sprite.png');
   background-repeat: no-repeat;
   display: inline-block;
-  height: 32px;
-  width: 32px;
-  vertical-align: bottom;
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+  margin-left: 4px;
   margin-right: 4px;
   cursor: pointer;
 }
 .minus {
-  background-position: -152px -390px;
+  background-position: -101px -21px;
 }
 .plus {
-  background-position: -119px -390px;
+  background-position: -101px 0px;
 }
+
+/*  ------ Stronghold styles ------  */
 
 .defense {
   background-image: url('/includes/strongholdSprites.png');

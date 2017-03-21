@@ -26,7 +26,5 @@ $rowEvtStatus = mysqli_fetch_assoc($resultEventStatus);
 $currEvent = $rowEvtStatus["eventkey"];
 $currEventName = $rowEvtStatus["eventShortName"];
 $currMatchNumber = $rowEvtStatus["currentMatchNumber"];
-//$currEvent = "2015marea";
-//$currMatchNumber = 1;
 
 ?>

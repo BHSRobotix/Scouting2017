@@ -20,7 +20,7 @@ if ($freshen) {
     foreach($rankings as &$team) {
         // Skip the lead one
         if ($team[0] != "Rank") {
-            $query = "INSERT INTO ".$bluealliancerankingsTable." (eventkey, teamnumber, rank, rankingScore, auto, scaleChallenge, goals, defense, record, played) VALUES ("
+            $query = "INSERT INTO ".$bluealliancerankingsTable." (eventkey, teamnumber, rank, rankingScore, matchPoints, auto, rotor, touchpad, pressure, record, played) VALUES ("
                     .$db->quote($currEvent).","
                     .$db->quote($team[1]).","
                     .$db->quote($team[0]).","
@@ -30,8 +30,9 @@ if ($freshen) {
                     .$db->quote($team[5]).","
                     .$db->quote($team[6]).","
                     .$db->quote($team[7]).","
-                    .$db->quote($team[8]).");";
-            //$msg .=  $query.'<br/><br/>';
+                    .$db->quote($team[8]).","
+                    .$db->quote($team[9]).");";
+            $msg .=  $query.'<br/><br/>';
             $result = $db -> query($query);
             $countRanks++;
         }
@@ -87,11 +88,10 @@ if ($freshen) {
         <table data-sortable>
             <thead>
                 <tr>
-                    <th scope="col">Rank</th><th scope="col">Team #</th><th scope="col">Score</th>
-                    <th scope="col">Auto</th><th scope="col">Challenge</th>
-                    <th scope="col">Goals</th><th scope="col">Defense</th>
-                    <th scope="col">Record</th><th scope="col">Played</th>
-                    <th scope="col">OPRS</th><th scope="col">CCWMS</th><th scope="col">DPRS</th>
+                    <th>Rank</th><th>Team #</th><th>Score</th><th>Points</th>
+                    <th>Auto</th><th>Rotor</th><th>Touchpad</th><th>Pressure</th>
+                    <th>Record</th><th>Played</th>
+                    <th>OPRS</th><th>CCWMS</th><th>DPRS</th>
                 </tr>
             </thead>
             <tbody>    
@@ -102,8 +102,8 @@ if ($freshen) {
             ?>
                 <tr>
                     <td><?= $row['rank'] ?></td><td><a href="reportsSingleTeam.php?tmNum=<?= $row['teamnumber'] ?>"><?= $row['teamnumber'] ?></a></td><td><?= $row['rankingScore'] ?></td>
-                    <td><?= $row['auto'] ?></td><td><?= $row['scaleChallenge'] ?></td>
-                    <td><?= $row['goals'] ?></td><td><?= $row['defense'] ?></td>
+                    <td><?= $row['matchPoints'] ?></td><td><?= $row['auto'] ?></td><td><?= $row['rotor'] ?></td>
+                    <td><?= $row['touchpad'] ?></td><td><?= $row['pressure'] ?></td>
                     <td><?= $row['record'] ?></td><td><?= $row['played'] ?></td>
                     <td><?= $row['oprs'] ?></td><td><?= $row['ccwms'] ?></td><td><?= $row['dprs'] ?></td>
                 </tr>

@@ -23,8 +23,8 @@ include "../includes/globalVars.php";
 
         <div class="button-actions-set">
             <p><a href="reportsSelectTeam.php" class="btn btn-block btn-primary">Individual Team Report</a></p>
-            <p><a href="reportsDefensesSelectTeams.php" class="btn btn-block btn-success">Defenses Report</a></p>
-            <p><a href="reportsAllianceRank.php" class="btn btn-block btn-info">Alliance Selection Helper</a></p>
+<!--             <p><a href="reportsDefensesSelectTeams.php" class="btn btn-block btn-success">Defenses Report</a></p> -->
+            <p><a href="reportsAllianceRank.php?numGearCyclers=24&numAutoGears=24&numClimbers=24&numHighGoals=5" class="btn btn-block btn-info">Alliance Selection Helper</a></p>
             <p><a href="reportsScoutsStats.php" class="btn btn-block btn-warning">DevilScoutz Stats</a></p>
             <p><a href="reportsBlueAllianceRanks.php" class="btn btn-block btn-primary">TheBlueAlliance Rankings</a></p>
         </div>

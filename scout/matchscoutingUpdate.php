@@ -2,47 +2,118 @@
 include "../includes/sessionCheck.php";
 include "../includes/globalVars.php";
 
-$autoLowGoalAttempts = ($_POST['autoShoot'] == "missedLow" || $_POST['autoShoot'] == "madeLow") ? 1 : 0;
-$autoLowGoalSuccess = ($_POST['autoShoot'] == "madeLow") ? 1 : 0;
-$autoHighGoalAttempts = ($_POST['autoShoot'] == "missedHigh" || $_POST['autoShoot'] == "madeHigh") ? 1 : 0;
-$autoHighGoalSuccess = ($_POST['autoShoot'] == "madeHigh") ? 1 : 0;
+// Normalize some fields
+$reliability = "NP";
+switch ($_POST['reliability']) {
+	case "Lost Conx":
+		$reliability = "CX";
+		break;
+	case "Broke":
+		$reliability = "BK";
+		break;
+	case "Other":
+		$reliability = "O";
+		break;
+}
+$reliabilityComments = ($reliability != "NP") ? $_POST['reliabilityComments'] : "";
+$autoMobility = "NA";
+switch ($_POST['autoMobility']) {
+	case "Moves, no points":
+		$autoMobility = "D40";
+		break;
+	case "Drives 4 5":
+		$autoMobility = "D45";
+		break;
+}
+$autoGear = "NA";
+switch ($_POST['autoGear']) {
+	case "Delivers, too late":
+		$autoGear = "DTL";
+		break;
+	case "Delivers and yay":
+		$autoGear = "DIT";
+		break;
+}
+$autoGearPegLocation = ($autoGear != "NA") ? substr($_POST['autoGearPegLocation'],0,1) : "";
+$autoHopper = "NA";
+switch ($_POST['autoHopper']) {
+	case "Triggers, collects few":
+		$autoHopper = "TF";
+		break;
+	case "Triggers, collects most":
+		$autoHopper = "TM";
+		break;
+}
+$autoShootHighAttempted = intval($_POST['autoShootHighSuccess']) + intval($_POST['autoShootHighMissed']);
+$autoShootLowAttempted = intval($_POST['autoShootLowSuccess']) + intval($_POST['autoShootLowMissed']);
+// Tele-op
+$shotLocations = "";
+if(!empty($_POST['shootLocation'])){  //check that at least one checkbox was checked
+    foreach($_POST['shootLocation'] as $loc){
+        $shotLocations .= (strlen($shotLocations) > 0 ? "," : "") . $loc;
+    }
+}
 
-$teleopLowShotsAttempted = intval($_POST['teleShotLowSuccess']) + intval($_POST['teleShotLowMissed']);
-$teleopHighShotsAttempted = intval($_POST['teleShotHighSuccess']) + intval($_POST['teleShotHighMissed']);
+$climbingRope = "NA";
+switch ($_POST['climbingRope']) {
+	case "Fails to catch rope":
+		$climbingRope = "F2R";
+		break;
+	case "Climbs partially":
+		$climbingRope = "CP";
+		break;
+	case "Climbs to top":
+		$climbingRope = "CTOP";
+		break;
+}
+$climbingTouchpad = "NA";
+switch ($_POST['climbingTouchpad']) {
+	case "Fails to activate long enough":
+		$climbingTouchpad = "F2A";
+		break;
+	case "Activates successfully":
+		$climbingTouchpad = "YAY";
+		break;
+}
+$defenseComments = ($_POST['defense'] != "No") ? $_POST['defenseComments'] : "";
 
 $query = "INSERT INTO ".$performancesTable." (matchnumber, eventkey, teamnumber, "
-        . " isFunctional, auto_reach, auto_defense_crossed, auto_shot_low_attempt, auto_shot_low_success, auto_shot_high_attempt, auto_shot_high_success, "
-        . " tele_def_cross_lowbar, tele_def_cross_a_pc, tele_def_cross_a_cdf, tele_def_cross_b_moat, tele_def_cross_b_ramp, "
-        . " tele_def_cross_c_db, tele_def_cross_c_sp, tele_def_cross_d_rw, tele_def_cross_d_rt, "
-        . " tele_shot_low_attempt, tele_shot_low_success, tele_shot_high_attempt, tele_shot_high_success, "
-        . " tele_challenged, tele_scaled, comment, scout "
+        . " functional_code, functional_comments, auto_mobility, auto_gear, auto_gear_peg_location, auto_hopper, "
+        . " auto_shot_high_attempt, auto_shot_high_success, auto_shot_low_attempt, auto_shot_low_success, "
+        . " tele_fuel_acquire_floor, tele_fuel_acquire_hopper, tele_fuel_acquire_station, "
+        . " tele_shot_low_success, tele_shot_high_success, tele_shot_location, "
+        . " tele_gears_acquire_station, tele_gears_acquire_floor, tele_gears_delivered, "
+        . " tele_climb_attempt, tele_climb_outcome, "
+        . " tele_defense, tele_defense_comments, "
+        . " comment, scout "
         . ") VALUES ("
-        . $db->quote($_POST['matchnumber']) . "," 
+        . $db->quote($_POST['matchnumber']) . ","
         . $db->quote($currEvent) . "," 
         . $db->quote($_POST['teamnumber']) . "," 
-        . $db->quote($_POST['isFunctional']) . "," 
-        . $db->quote($_POST['autoReach']) . "," 
-        . $db->quote($_POST['autoCross']) . "," 
-        . $db->quote($autoLowGoalAttempts) . "," 
-        . $db->quote($autoLowGoalSuccess) . "," 
-        . $db->quote($autoHighGoalAttempts) . "," 
-        . $db->quote($autoHighGoalSuccess) . "," 
-        . $db->quote($_POST['telecrossLowBar']) . "," 
-        . $db->quote($_POST['telecrossPortcullis']) . "," 
-        . $db->quote($_POST['telecrossChevalDeFrise']) . ","
-        . $db->quote($_POST['telecrossMoat']) . "," 
-        . $db->quote($_POST['telecrossRamparts']) . "," 
-        . $db->quote($_POST['telecrossDrawbridge']) . "," 
-        . $db->quote($_POST['telecrossSallyPort']) . "," 
-        . $db->quote($_POST['telecrossRockWall']) . "," 
-        . $db->quote($_POST['telecrossRoughTerrain']) . "," 
-        . $db->quote($teleopLowShotsAttempted) . "," 
-        . $db->quote($_POST['teleShotLowSuccess']) . "," 
-        . $db->quote($teleopHighShotsAttempted) . ","
-        . $db->quote($_POST['teleShotHighSuccess']) . "," 
-        . $db->quote($_POST['teleChallenged']) . "," 
-        . $db->quote($_POST['teleScaled']) . ","
-        . $db->quote($_POST['comments']) . "," 
+        . $db->quote($reliability) . "," 
+        . $db->quote($reliabilityComments) . "," 
+        . $db->quote($autoMobility) . "," 
+        . $db->quote($autoGear) . "," 
+        . $db->quote($autoGearPegLocation) . "," 
+        . $db->quote($autoHopper) . "," 
+        . $db->quote($autoShootHighAttempted) . "," 
+        . $db->quote($_POST['autoShootHighSuccess']) . "," 
+        . $db->quote($autoShootLowAttempted) . "," 
+        . $db->quote($_POST['autoShootLowSuccess']) . "," 
+        . $db->quote($_POST['fuelIntakeGround']) . "," 
+        . $db->quote($_POST['fuelIntakeHopper']) . "," 
+        . $db->quote($_POST['fuelIntakeStation']) . "," 
+        . $db->quote($_POST['teleShootLowSuccess']) . "," 
+        . $db->quote($_POST['teleShootHighSuccess']) . "," 
+        . $db->quote($shotLocations) . "," 
+        . $db->quote($_POST['gearsPickupStation']) . "," 
+        . $db->quote($_POST['gearsPickupGround']) . "," 
+        . $db->quote($_POST['gearsDelivered']) . "," 
+        . $db->quote($climbingRope) . "," 
+        . $db->quote($climbingTouchpad) . "," 
+        . $db->quote($_POST['defense']) . "," 
+        . $db->quote($defenseComments) . "," 
+        . $db->quote($_POST['generalComments']) . "," 
         . $db->quote($_SESSION['username']) . ");";
 
 $result = $db->query($query);
