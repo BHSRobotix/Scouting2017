@@ -57,7 +57,18 @@ $resultMatchesTable = $db->query($queryMatchesTable);
             var numTeleopVis = $(this).find("tr.expandable-template").find("th.teleop:visible, td.teleop:visible").length;
             $(this).find("td.teleop-span").attr("colspan", numTeleopVis);
         });
-    }
+    };
+    var toggleMultipleReportsVisibility = function() {
+        $("tr.multi-report").each(function() {
+            // find the class that helps me find the single-reports associated with this multi-report
+            var className = $(this).attr("class").toString().match(/tm-\d+-qm-\d+/).toString();
+            $("tr.single-report."+className).slideToggle();
+            $(this).click(function() {
+            	$("tr.single-report."+className).slideToggle();
+            	$(this).toggleClass("open");
+            });
+        });            
+    };
     var changeReportType = function() {
         reportType = reportType === "concise" ? "expanded" : "concise";
         $(".expanded").toggle(reportType === "expanded");
@@ -67,9 +78,14 @@ $resultMatchesTable = $db->query($queryMatchesTable);
     };
     $(document).ready(function() {
     	adjustColspans();
+    	toggleMultipleReportsVisibility();
         $("#reportTypeToggle").click(function() {
         	changeReportType();
         });
+//         $("#tr.multi-report").click(function() {
+//             var className = $(this).attr("class").toString().match(/tm-\d+-qm-\d+/).toString();
+//             $("tr.single-report."+className).slideToggle();
+//         });
     });
 
 </script>

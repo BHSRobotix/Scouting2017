@@ -67,11 +67,23 @@ table .expanded {
 th.subdued, td.subdued {
   color: lightgray;
 }
+.multi-report td:first-child::before, .single-report td:first-child::before {
+  font-size: 10pt;
+  font-family: 'FontAwesome';
+  text-decoration: none;
+  padding-right: 4px;
+}
 .multi-report td:first-child::before {
- font-size: 10pt;
- font-family: 'FontAwesome';
- text-decoration: none;
- content: '\f0c0';
+  content: '\f07b'; /* -- folder outline = '\f115';  -- */
+  color: navajowhite;  /* -- #fee1a7;  -- */
+}
+.multi-report.open td:first-child::before {
+  content: '\f07c';   /* -- folder outline = '\f114';  -- */
+  color: navajowhite;  /* -- #fee1a7;  -- */
+}
+.single-report td:first-child::before {
+  content: '\f016';
+  opacity: 0.4;
 }
 .multi-report td.mismatch {
   background-color: orange;
