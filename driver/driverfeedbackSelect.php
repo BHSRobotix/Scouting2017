@@ -40,9 +40,9 @@ form {
         
         <div class="page-header">
             <?php if ($allMatches) { ?>
-                <h2>All matches (<a href="driverfeedbackSelect.php?all=false">see only Devilbotz</a>)</h2>
+                <h2>All matches (<a href="driverfeedbackSelect.php?all=false">see only <?= $ourTeamName ?></a>)</h2>
             <?php } else { ?>
-                <h2>Devilbotz matches (<a href="driverfeedbackSelect.php?all=true">see all</a>)</h2>
+                <h2><?= $ourTeamName ?> matches (<a href="driverfeedbackSelect.php?all=true">see all</a>)</h2>
             <?php } ?>
         </div>
 

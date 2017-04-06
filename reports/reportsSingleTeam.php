@@ -138,24 +138,111 @@ $resultMatchesTable = $db->query($queryMatchesTable);
             <?php
             $zeroPerfs = true;
             $matchComments = "";
+            $summaryRow = array();   // combine multiple matches into this summaryRow
+            $summaryRow['matchnumber'] = -1;
+            $summaryRow['numRows'] = 0;
+            $mmVal = "MM";
+            $mmClz = "alert alert-warning"; // "mismatch"
             while ($row = mysqli_fetch_assoc($resultPerfomancesTable)) {
                 $zeroPerfs = false;
                 $functional = true;
+                $matchnum = $row['matchnumber'];
                 if (!empty($row['comment'])) {
-                    $matchComments .= "<tr><td>Q".$row['matchnumber']."</td><td>".$row['comment']."</td><td>".$row['scout']."</td></tr>";
+                    $matchComments .= "<tr><td>Q".$matchnum."</td><td>".$row['comment']."</td><td>".$row['scout']."</td></tr>";
                 }
                 if ($row['functional_code'] != "NP") {
                 	$functional = false;
-                	$matchComments .= "<tr><td>Q".$row['matchnumber']."</td><td><b>".$row['functional_code'].": </b>".$row['functional_comments']."</td><td>".$row['scout']."</td></tr>";                	 
+                	$matchComments .= "<tr><td>Q".$matchnum."</td><td><b>".$row['functional_code'].": </b>".$row['functional_comments']."</td><td>".$row['scout']."</td></tr>";                	 
                 }
                 if (!empty($row['tele_defense_comments'])) {
-                	$matchComments .= "<tr><td>Q".$row['matchnumber']."</td><td><b>Def: </b>".$row['tele_defense_comments']."</td><td>".$row['scout']."</td></tr>";                	 
+                	$matchComments .= "<tr><td>Q".$matchnum."</td><td><b>Def: </b>".$row['tele_defense_comments']."</td><td>".$row['scout']."</td></tr>";                	 
                 }
-                               
+
+                if ($matchnum == $summaryRow['matchnumber']) {
+                	$summaryRow['numRows'] = $summaryRow['numRows'] + 1;
+                	$summaryRow['functional_code'] = ($summaryRow['functional_code'] == $row['functional_code'] ? $row['functional_code'] : $mmVal);
+                	$summaryRow['auto_mobility'] = ($summaryRow['auto_mobility'] == $row['auto_mobility'] ? $row['auto_mobility'] : $mmVal);
+                	$summaryRow['auto_gear'] = ($summaryRow['auto_gear'] == $row['auto_gear'] ? $row['auto_gear'] : $mmVal);
+                	$summaryRow['auto_gear_peg_location'] = ($summaryRow['auto_gear_peg_location'] == $row['auto_gear_peg_location'] ? $row['auto_gear_peg_location'] : $mmVal);
+                	$summaryRow['auto_hopper'] = ($summaryRow['auto_hopper'] == $row['auto_hopper'] ? $row['auto_hopper'] : $mmVal);
+
+                	$summaryRow['auto_shot_high_attempt'] = $summaryRow['auto_shot_high_attempt'] + $row['auto_shot_high_attempt'];
+                	$summaryRow['auto_shot_high_success'] = $summaryRow['auto_shot_high_success'] + $row['auto_shot_high_success'];
+                	$summaryRow['auto_shot_low_attempt'] = $summaryRow['auto_shot_low_attempt'] + $row['auto_shot_low_attempt'];
+                	$summaryRow['auto_shot_low_success'] = $summaryRow['auto_shot_low_success'] + $row['auto_shot_low_success'];
+                	$summaryRow['tele_fuel_acquire_floor'] = $summaryRow['tele_fuel_acquire_floor'] + $row['tele_fuel_acquire_floor'];
+                	$summaryRow['tele_fuel_acquire_hopper'] = $summaryRow['tele_fuel_acquire_hopper'] + $row['tele_fuel_acquire_hopper'];
+                	$summaryRow['tele_fuel_acquire_station'] = $summaryRow['tele_fuel_acquire_station'] + $row['tele_fuel_acquire_station'];
+                	$summaryRow['tele_shot_high_success'] = $summaryRow['tele_shot_high_success'] + $row['tele_shot_high_success'];
+                	$summaryRow['tele_shot_low_success'] = $summaryRow['tele_shot_low_success'] + $row['tele_shot_low_success'];
+
+                	$summaryRow['tele_shot_location'] = ($summaryRow['tele_shot_location'] == $row['tele_shot_location'] ? $row['tele_shot_location'] : $mmVal);
+                	
+                	$summaryRow['tele_gears_acquire_floor'] = $summaryRow['tele_gears_acquire_floor'] + $row['tele_gears_acquire_floor'];
+                	$summaryRow['tele_gears_acquire_station'] = $summaryRow['tele_gears_acquire_station'] + $row['tele_gears_acquire_station'];
+                	$summaryRow['tele_gears_delivered'] = $summaryRow['tele_gears_delivered'] + $row['tele_gears_delivered'];
+                	 
+                	$summaryRow['tele_climb_attempt'] = ($summaryRow['tele_climb_attempt'] == $row['tele_climb_attempt'] ? $row['tele_climb_attempt'] : $mmVal);
+                	$summaryRow['tele_climb_outcome'] = ($summaryRow['tele_climb_outcome'] == $row['tele_climb_outcome'] ? $row['tele_climb_outcome'] : $mmVal);
+                	$summaryRow['tele_defense'] = ($summaryRow['tele_defense'] == $row['tele_defense'] ? $row['tele_defense'] : $mmVal);
+                } else {
+                    // create the summary row if the number of rows of the last one is > 1
+                    if ($summaryRow['numRows'] > 1) {
+                    	$rowClass = "tm-".$team."-qm-".$summaryRow['matchnumber'];
+                   	?>
+                   	    <tr class="multi-report <?= $rowClass ?><?php if ($summaryRow['functional_code'] != "NP") { ?> alert alert-danger<?php } ?>">
+                    	    <td class="concise"><?= $summaryRow['matchnumber'] ?></td>
+                    	    <td class="auto concise <?= $summaryRow['auto_mobility'] != $mmVal ? $mmClz : "" ?>"><?= $summaryRow['auto_mobility'] == "NA" ? "0" : ($summaryRow['auto_mobility'] == "D40" ? "<b>0</b>" : ($summaryRow['auto_mobility'] == "D45" ?"<b>5</b>" : "")) ?></td>                
+                    	    <td class="auto concise <?= ($summaryRow['auto_gear'] == $mmVal || $summaryRow['auto_gear_peg_location'] == $mmVal) ? $mmClz : "" ?>">
+                    	        <span class="expanded"><?= $summaryRow['auto_gear'] ?><?= $summaryRow['auto_gear'] != "NA" ? ":" : "" ?></span>
+                    	        <?= $summaryRow['auto_gear'] == "DIT" ? "<b>" : "" ?><?= $summaryRow['auto_gear_peg_location'] ?><?= $summaryRow['auto_mobility'] == "DIT" ? "</b>" : "" ?>
+                    	    </td>
+                    	    <td class="auto expanded <?= $summaryRow['auto_hopper'] == $mmVal ? $mmClz : "" ?>"><?= $summaryRow['auto_hopper'] ?></td>
+                    	    <td class="auto concise"><?= $summaryRow['auto_shot_high_success']/$summaryRow['numRows'] ?> / <?= $summaryRow['auto_shot_high_attempt']/$summaryRow['numRows'] ?></td>
+                    	    <td class="auto expanded"><?= $summaryRow['auto_shot_low_success']/$summaryRow['numRows'] ?> / <?= $summaryRow['auto_shot_low_attempt']/$summaryRow['numRows'] ?></td>
+                    	    <td class="teleop concise"><?= $summaryRow['tele_fuel_acquire_floor']/$summaryRow['numRows'] ?> | <?= $summaryRow['tele_fuel_acquire_hopper']/$summaryRow['numRows'] ?> | <?= $summaryRow['tele_fuel_acquire_station']/$summaryRow['numRows'] ?></td>
+                    	    <td class="teleop concise"><?= $summaryRow['tele_shot_high_success']/$summaryRow['numRows'] ?></td>
+                    	    <td class="teleop expanded"><?= $summaryRow['tele_shot_low_success']/$summaryRow['numRows'] ?></td>
+                    	    <td class="teleop expanded <?= $summaryRow['tele_shot_location'] == $mmVal ? $mmClz : "" ?>"><?= $summaryRow['tele_shot_location'] ?></td>
+                    	    <td class="teleop concise"><?= $summaryRow['tele_gears_acquire_floor']/$summaryRow['numRows'] ?> | <?= $summaryRow['tele_gears_acquire_station']/$summaryRow['numRows'] ?> | <b><?= $summaryRow['tele_gears_delivered']/$summaryRow['numRows'] ?></b></td>
+                    	    <td class="teleop expanded <?= $summaryRow['tele_climb_attempt'] == $mmVal ? $mmClz : "" ?>"><?= $summaryRow['tele_climb_attempt'] ?></td>
+                            <td class="teleop concise <?= $summaryRow['tele_climb_outcome'] == $mmVal ? $mmClz : "" ?>"><?= $summaryRow['tele_climb_outcome'] == "YAY" ? "<span class='fa fa-check-circle'></span>" : "" ?></td>
+                            <td class="teleop concise <?= $summaryRow['tele_defense'] == $mmVal ? $mmClz : "" ?>"><?= $summaryRow['tele_defense'] == "Yes" ? "<span class='fa fa-check-circle'></span>" : "" ?></td>
+                            <td class="expanded">multiple</td>
+                        </tr>                    	                                    
+                    <?php
+                    }
+                   	// reset the summary as if every time is the start of a new summary (obv. some of these will be not be more than one row)
+                   	$summaryRow['matchnumber'] = $matchnum;
+                   	$summaryRow['numRows'] = 1;
+                   	$summaryRow['functional_code'] = $row['functional_code'];
+                   	$summaryRow['auto_mobility'] = $row['auto_mobility'];
+                   	$summaryRow['auto_gear'] = $row['auto_gear'];
+                   	$summaryRow['auto_gear_peg_location'] = $row['auto_gear_peg_location'];
+                   	$summaryRow['auto_hopper'] = $row['auto_hopper'];
+                   	$summaryRow['auto_shot_high_attempt'] = $row['auto_shot_high_attempt'];
+                   	$summaryRow['auto_shot_high_success'] = $row['auto_shot_high_success'];
+                   	$summaryRow['auto_shot_low_attempt'] = $row['auto_shot_low_attempt'];
+                   	$summaryRow['auto_shot_low_success'] = $row['auto_shot_low_success'];
+                   	$summaryRow['tele_fuel_acquire_floor'] = $row['tele_fuel_acquire_floor'];
+                   	$summaryRow['tele_fuel_acquire_hopper'] = $row['tele_fuel_acquire_hopper'];
+                   	$summaryRow['tele_fuel_acquire_station'] = $row['tele_fuel_acquire_station'];
+                   	$summaryRow['tele_shot_high_success'] = $row['tele_shot_high_success'];
+                   	$summaryRow['tele_shot_low_success'] = $row['tele_shot_low_success'];
+                   	$summaryRow['tele_shot_location'] = $row['tele_shot_location'];
+                   	$summaryRow['tele_gears_acquire_floor'] = $row['tele_gears_acquire_floor'];
+                   	$summaryRow['tele_gears_acquire_station'] = $row['tele_gears_acquire_station'];
+                   	$summaryRow['tele_gears_delivered'] = $row['tele_gears_delivered'];
+                   	$summaryRow['tele_climb_attempt'] = $row['tele_climb_attempt'];
+                   	$summaryRow['tele_climb_outcome'] = $row['tele_climb_outcome'];
+                   	$summaryRow['tele_defense'] = $row['tele_defense'];
+                }                  
+
+                $rowClass = "tm-".$team."-qm-".$matchnum;
             ?>
             
-                <tr <?php if (!$functional) { ?> class="alert alert-danger"<?php } ?>>
-                    <td class="concise"><?= $row['matchnumber'] ?></td>
+                <tr class="single-report <?= $rowClass ?><?php if (!$functional) { ?> alert alert-danger<?php } ?>">
+                    <td class="concise"><?= $matchnum ?></td>
                     <td class="auto concise"><?= $row['auto_mobility'] == "NA" ? "0" : ($row['auto_mobility'] == "D40" ? "<b>0</b>" : "<b>5</b>") ?></td>                
                     <td class="auto concise">
                         <span class="expanded"><?= $row['auto_gear'] ?><?= $row['auto_gear'] != "NA" ? ":" : "" ?></span>

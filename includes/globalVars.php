@@ -1,5 +1,10 @@
 <?php 
 $ourTeamNum = "2876";
+$ourTeamName = "Devilbotz";
+$ourScoutsName = "DevilScoutz";
+//$ourTeamNum = "5347";
+//$ourTeamName = "Gryphons";
+//$ourScoutsName = "Gryphons Scouts";
 
 $eventstatusTable = "eventstatus";
 $teamsTable = "teams";

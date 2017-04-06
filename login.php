@@ -15,6 +15,8 @@ if(isset($_POST['submit'])) {
             $_SESSION['username'] = $_POST['username'];
             $row = mysqli_fetch_assoc($result);
             $_SESSION['role'] = $row['role'];
+           	$queryUpdate = "UPDATE ".$usersTable." SET lastlogin='".date("Y-m-d H:i:s")."' WHERE id='".$row['id']."';";
+           	$resultUpdate = $db -> query($queryUpdate);
             header("Location: /index.php");
         } else {
             //we put errors in a variable $msg then print out $msg below

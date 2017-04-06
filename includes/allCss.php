@@ -25,7 +25,7 @@ body {
   padding-bottom: 30px;
 }
 
-h4 {
+h4, h1.error, h2.error, h3.error, span.error {
   color: indianred;
   font-weight: bold;
 }
@@ -44,7 +44,7 @@ h4 {
   width: auto;
 }
 
-/*  ------ New styles for 2017------  */
+/*  ------ New generic styles for 2017------  */
 
 .conditional-info {
   display: none;
@@ -64,7 +64,18 @@ table .expanded {
   color: blue;
   text-decoration: underline;
 }
-
+th.subdued, td.subdued {
+  color: lightgray;
+}
+.multi-report td:first-child::before {
+ font-size: 10pt;
+ font-family: 'FontAwesome';
+ text-decoration: none;
+ content: '\f0c0';
+}
+.multi-report td.mismatch {
+  background-color: orange;
+}
 /*  ------ Steamworks styles -------  */
 
 .sw {

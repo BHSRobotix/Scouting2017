@@ -24,7 +24,8 @@ form {
         <div class="page-header"><h2>Create User</h2></div>
         <div>
             <form action="createuserUpdate.php" method="post">
-                <input class="form-control"  type="text" name="realname" placeholder="Real name" required autofocus>
+                <input class="form-control"  type="text" name="team" placeholder="Team #" required autofocus>
+                <input class="form-control"  type="text" name="realname" placeholder="Real name" required>
                 <input class="form-control"  type="text" name="username" placeholder="Username" required >
                 <input class="form-control"  type="text" name="role" placeholder="Role (i.e. scout, drive, admin)" required >
 

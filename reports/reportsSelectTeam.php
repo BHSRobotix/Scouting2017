@@ -42,9 +42,9 @@ if ($_GET["all"] == "true" || $_POST["all"] == "true") {
         <br/>
         <p>       
             <?php if ($allMatches) { ?>
-                <h4>Query by Match - All matches (<a href="reportsSelectTeam.php?all=false">see only Devilbotz</a>)</h4>
+                <h4>Query by Match - All matches (<a href="reportsSelectTeam.php?all=false">see only <?= $ourTeamName ?></a>)</h4>
             <?php } else { ?>
-                <h4>Query by Match - Devilbotz matches (<a href="reportsSelectTeam.php?all=true">see all</a>)</h4>
+                <h4>Query by Match - <?= $ourTeamName ?> matches (<a href="reportsSelectTeam.php?all=true">see all</a>)</h4>
             <?php }
             
             $result = $db->query($query);
